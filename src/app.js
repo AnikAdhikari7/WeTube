@@ -4,7 +4,7 @@ import express from "express";
 
 // internal imports
 import cookieParser from "cookie-parser";
-import { MAX_LIMIT } from "./constants.js";
+import { API_V, MAX_LIMIT } from "./constants.js";
 
 const app = express();
 
@@ -19,5 +19,11 @@ app.use(express.json({ limit: MAX_LIMIT }));
 app.use(express.urlencoded({ extended: true, limit: MAX_LIMIT }));
 app.use(express.static("public"));
 app.use(cookieParser());
+
+// routes import
+import userRouter from "./routes/user.routes.js";
+
+// routes declaration
+app.use(API_V + "/users", userRouter);
 
 export default app;
