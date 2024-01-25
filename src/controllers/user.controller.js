@@ -143,6 +143,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
     if (!username && !email) {
         throw new ApiError(400, "Username or Email is required");
+    } else if (!password) {
+        throw new ApiError(400, "Password is required");
     }
 
     // find the user
@@ -341,7 +343,9 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(200, user, "Account details updated successfully");
+        .json(
+            new ApiResponse(200, user, "Account details updated successfully")
+        );
 });
 
 // update user avatar
