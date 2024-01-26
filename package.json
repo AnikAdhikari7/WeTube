@@ -1,44 +1,44 @@
 {
-  "name": "wetube",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "dev": "nodemon src/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AnikAdhikari7/WeTube.git"
-  },
-  "keywords": [
-    "wetube",
-    "javascript",
-    "backend",
-    "nodejs",
-    "expressjs",
-    "mongodb"
-  ],
-  "author": "Anik Adhikari",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/AnikAdhikari7/WeTube/issues"
-  },
-  "homepage": "https://github.com/AnikAdhikari7/WeTube#readme",
-  "devDependencies": {
-    "nodemon": "^3.0.3",
-    "prettier": "^3.2.4"
-  },
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cloudinary": "^1.41.3",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.1.0",
-    "mongoose-aggregate-paginate-v2": "^1.0.7",
-    "multer": "^1.4.5-lts.1"
-  }
+    "name": "wetube",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "dev": "nodemon src/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AnikAdhikari7/WeTube.git"
+    },
+    "keywords": [
+        "wetube",
+        "javascript",
+        "backend",
+        "nodejs",
+        "expressjs",
+        "mongodb"
+    ],
+    "author": "Anik Adhikari",
+    "license": "MIT License",
+    "bugs": {
+        "url": "https://github.com/AnikAdhikari7/WeTube/issues"
+    },
+    "homepage": "https://github.com/AnikAdhikari7/WeTube#readme",
+    "devDependencies": {
+        "nodemon": "^3.0.3",
+        "prettier": "^3.2.4"
+    },
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "cloudinary": "^1.41.3",
+        "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "jsonwebtoken": "^9.0.2",
+        "mongoose": "^8.1.0",
+        "mongoose-aggregate-paginate-v2": "^1.0.7",
+        "multer": "^1.4.5-lts.1"
+    }
 }

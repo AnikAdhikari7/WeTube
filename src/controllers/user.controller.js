@@ -3,7 +3,10 @@ import User from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import uploadOnCloudinary from "../utils/cloudinary.js";
+import {
+    deleteFromCloudinary,
+    uploadOnCloudinary,
+} from "../utils/cloudinary.js";
 
 // options for cookie
 const options = {
@@ -87,8 +90,11 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     // upload images to cloudinary, avatar and coverImage
-    const avatar = await uploadOnCloudinary(avatarLocalPath);
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+    const avatar = await uploadOnCloudinary(avatarLocalPath, "avatar");
+    const coverImage = await uploadOnCloudinary(
+        coverImageLocalPath,
+        "coverImage"
+    );
 
     // thorow error if avatar upload fails on cloudinary
     if (!avatar) {
@@ -358,12 +364,13 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     }
 
     // upload avatar to cloudinary
-    const avatar = await uploadOnCloudinary(avatarLocalPath);
+    const avatar = await uploadOnCloudinary(avatarLocalPath, "avatar");
 
     if (!avatar.url) {
         throw new ApiError(500, "Error while uploading the avatar");
     }
 
+    /*
     // update the avatar field in db
     const user = await User.findByIdAndUpdate(
         req.user?._id,
@@ -374,6 +381,24 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
         },
         { new: true }
     ).select("-password");
+    */
+
+    let user;
+    // delete the previous avatar from cloudinary and update the avatar field in db
+    try {
+        user = await User.findById(req.user?._id).select("-password");
+        const folderPath = "wetube/users/avatars/";
+        const oldAvatar = user.avatar;
+
+        // update the avatar field in db
+        user.avatar = avatar.url;
+        await user.save({ validateBeforeSave: false });
+
+        // delete the previous avatar from cloudinary
+        await deleteFromCloudinary(folderPath, oldAvatar);
+    } catch (error) {
+        throw new ApiError(500, "Error while updating the avatar");
+    }
 
     return res
         .status(200)
@@ -390,12 +415,16 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     }
 
     // upload cover image to cloudinary
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+    const coverImage = await uploadOnCloudinary(
+        coverImageLocalPath,
+        "coverImage"
+    );
 
     if (!coverImage.url) {
         throw new ApiError(500, "Error while uploading the cover image");
     }
 
+    /*
     // update the cover image field in db
     const user = await User.findByIdAndUpdate(
         req.user?._id,
@@ -406,6 +435,24 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
         },
         { new: true }
     ).select("-password");
+    */
+
+    let user;
+    // delete the previous cover image from cloudinary and update the cover image field in db
+    try {
+        user = await User.findById(req.user?._id).select("-password");
+        const folderPath = "wetube/users/cover-images/";
+        const oldCoverImage = user.coverImage;
+
+        // update the cover image field in db
+        user.coverImage = coverImage.url;
+        await user.save({ validateBeforeSave: false });
+
+        // delete the previous cover image from cloudinary
+        await deleteFromCloudinary(folderPath, oldCoverImage);
+    } catch (error) {
+        throw new ApiError(500, "Error while updating the cover image");
+    }
 
     return res
         .status(200)
