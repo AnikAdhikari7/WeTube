@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
@@ -461,6 +462,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
         );
 });
 
+// get user channel profile
 const getUserChannelProfile = asyncHandler(async (req, res) => {
     const { username } = req.params;
 
@@ -468,6 +470,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Username is missing");
     }
 
+    // get user channel profile details from db and send response
     const channel = await User.aggregate([
         {
             $match: { username: username?.toLowerCase() },
@@ -515,6 +518,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         },
     ]);
 
+    // console.log("channel: ", channel);
     if (!channel?.length) {
         throw new ApiError(404, "Channel does not exists");
     }
@@ -524,10 +528,66 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     );
 });
 
+const getWatchHistory = asyncHandler(async (req, res) => {
+    // get watch history of the user from db and send response
+    try {
+        const user = await User.aggregate([
+            {
+                $match: { _id: new mongoose.Types.ObjectId(req.user?._id) },
+            },
+            {
+                $lookup: {
+                    from: "videos",
+                    localField: "watchHistory",
+                    foreignField: "_id",
+                    as: "watchHistory",
+                    pipeline: [
+                        {
+                            $lookup: {
+                                from: "users",
+                                localField: "owner",
+                                foreignField: "_id",
+                                as: "owner",
+                                pipeline: [
+                                    {
+                                        $project: {
+                                            username: 1,
+                                            fullName: 1,
+                                            avatar: 1,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            $addFields: {
+                                owner: { $first: "$owner" },
+                            },
+                        },
+                    ],
+                },
+            },
+        ]);
+
+        // console.log("user: ", user);
+        // console.log("user: ", user[0]);
+        res.status(200).json(
+            new ApiResponse(
+                200,
+                user[0].watchHistory,
+                "Watch history fetched successfully"
+            )
+        );
+    } catch (error) {
+        throw new ApiError(400, "User not found");
+    }
+});
+
 export {
     changeCurrentPassword,
     getCurrentUser,
     getUserChannelProfile,
+    getWatchHistory,
     loginUser,
     logoutUser,
     refereshAccessToken,
