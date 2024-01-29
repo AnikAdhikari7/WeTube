@@ -21,9 +21,11 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 // routes import
+import tweetRouter from "./routes/tweet.routes.js";
 import userRouter from "./routes/user.routes.js";
 
 // routes declaration
 app.use(API_V + "/users", userRouter);
+app.use(API_V + "/tweets", tweetRouter);
 
 export default app;
