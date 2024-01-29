@@ -11,7 +11,7 @@ const tweetRouter = Router();
 tweetRouter.use(verifyJWT); // Apply verifyJWT middleware to all routes in this file
 
 tweetRouter.route("/").post(createTweet);
-tweetRouter.route("/user/:userId").get(getUserTweets);
+tweetRouter.route("/user").get(getUserTweets);
 tweetRouter.route("/:tweetId").patch(updateTweet).delete(deleteTweet);
 
 export default tweetRouter;
