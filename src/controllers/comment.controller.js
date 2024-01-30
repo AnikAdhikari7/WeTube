@@ -140,11 +140,64 @@ const getVideoComments = asyncHandler(async (req, res) => {
 });
 
 const updateComment = asyncHandler(async (req, res) => {
-    // TODO: update a comment
+    const { commentId } = req.params;
+    const { newContent } = req.body;
+
+    if (!(commentId || isValidObjectId(commentId))) {
+        throw new ApiError(400, "Invalid comment id");
+    } else if (!newContent) {
+        throw new ApiError(400, "New comment content is required");
+    }
+
+    try {
+        const newComment = await Comment.findByIdAndUpdate(
+            commentId,
+            {
+                $set: {
+                    content: newContent,
+                },
+            },
+            { new: true }
+        );
+
+        if (!newComment) {
+            throw new ApiError(500, "Unable to update comment");
+        }
+
+        res.status(201).json(
+            new ApiResponse(201, newComment, "Comment updated successfully")
+        );
+    } catch (error) {
+        throw new ApiError(
+            500,
+            error?.message || "Something went wrong while updating comment"
+        );
+    }
 });
 
 const deleteComment = asyncHandler(async (req, res) => {
-    // TODO: delete a comment
+    const { commentId } = req.params;
+
+    if (!(commentId || isValidObjectId(commentId))) {
+        throw new ApiError(400, "Invalid comment id");
+    }
+
+    try {
+        const deletedComment = await Comment.findByIdAndDelete(commentId);
+
+        if (!deletedComment) {
+            throw new ApiError(500, "Unable to delte comment");
+        }
+
+        res.status(201).json(
+            new ApiResponse(201, deletedComment, "Comment deleted successfully")
+        );
+    } catch (error) {
+        throw new ApiError(
+            500,
+            error?.message || "Something went wrong while deleting comment"
+        );
+    }
 });
 
 export { addComment, deleteComment, getVideoComments, updateComment };
