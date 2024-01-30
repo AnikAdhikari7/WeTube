@@ -31,7 +31,6 @@ const createTweet = asyncHandler(async (req, res) => {
 
 // get user tweets
 const getUserTweets = asyncHandler(async (req, res) => {
-    // TODO: get user tweets
     const userId = req.user?._id;
 
     if (!userId) {
@@ -40,7 +39,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
 
     try {
         const tweets = await Tweet.find({ owner: userId })
-            .select("-__v -_id -owner")
+            .select("-__v -owner")
             .lean()
             .sort("-createdAt")
             .limit(10)
@@ -50,16 +49,71 @@ const getUserTweets = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Unable to get tweets");
         }
 
+        // add owner field to each tweet
+        const tweetsOwner = {
+            username: req.user?.username,
+            _id: req.user?._id,
+        };
+
         res.status(200).json(
-            new ApiResponse(200, tweets, "Tweets retrieved successfully")
+            new ApiResponse(
+                200,
+                { tweetsOwner, tweets },
+                "Tweets retrieved successfully"
+            )
         );
     } catch (error) {
         throw new ApiError(500, error?.message || "Unable to get tweets");
     }
 });
 
+// update tweet
 const updateTweet = asyncHandler(async (req, res) => {
-    //TODO: update tweet
+    const { tweetId } = req.params;
+    const { newTweetContent } = req.body;
+    console.log(tweetId, newTweetContent);
+
+    if (!tweetId) {
+        throw new ApiError(400, "Tweet id is required");
+    }
+
+    if (!newTweetContent) {
+        throw new ApiError(400, "New tweet content is required");
+    }
+
+    try {
+        const existingTweet = await Tweet.findById(tweetId);
+
+        if (!existingTweet) {
+            throw new ApiError(404, "Tweet not found");
+        }
+
+        // check if the tweet belongs to the user
+        if (existingTweet.owner.toString() !== req.user?._id.toString()) {
+            throw new ApiError(403, "Unauthorized");
+        }
+
+        // update tweet
+        const updatedTweet = await Tweet.findByIdAndUpdate(
+            tweetId,
+            {
+                $set: {
+                    content: newTweetContent,
+                },
+            },
+            { new: true }
+        );
+
+        if (!updatedTweet) {
+            throw new ApiError(500, "Unable to update tweet");
+        }
+
+        res.status(200).json(
+            new ApiResponse(200, updatedTweet, "Tweet updated successfully")
+        );
+    } catch (error) {
+        throw new ApiError(500, error?.message || "Unable to update tweet");
+    }
 });
 
 const deleteTweet = asyncHandler(async (req, res) => {
