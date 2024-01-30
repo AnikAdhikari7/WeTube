@@ -32,6 +32,7 @@ const createTweet = asyncHandler(async (req, res) => {
 // get user tweets
 const getUserTweets = asyncHandler(async (req, res) => {
     const userId = req.user?._id;
+    const { page = 1, limit = 10 } = req.query;
 
     if (!userId) {
         throw new ApiError(400, "User id is required");
@@ -39,10 +40,10 @@ const getUserTweets = asyncHandler(async (req, res) => {
 
     try {
         const tweets = await Tweet.find({ owner: userId })
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
             .select("-__v -owner")
-            .lean()
             .sort("-createdAt")
-            .limit(10)
             .exec();
 
         if (!tweets) {
