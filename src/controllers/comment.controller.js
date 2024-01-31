@@ -150,6 +150,23 @@ const updateComment = asyncHandler(async (req, res) => {
     }
 
     try {
+        const comment = await Comment.findById(commentId);
+        if (!comment) {
+            throw new ApiError(404, "comment not found");
+        }
+        // video is published or not
+        const videoId = mongoose.Types.ObjectId(comment.video);
+        const video = await Video.findById(videoId);
+        if (!video) {
+            //if video doesn't exists then comment should be deleted
+            await Comment.deleteMany({ video: videoId }); //assume it is successfull
+            throw new ApiError(300, "Video doesn't exists");
+        }
+
+        if (comment.owner.toString() !== req.user?._id.toString()) {
+            throw new ApiError(300, "Unauthorized Access");
+        }
+
         const newComment = await Comment.findByIdAndUpdate(
             commentId,
             {
@@ -183,6 +200,23 @@ const deleteComment = asyncHandler(async (req, res) => {
     }
 
     try {
+        const comment = await Comment.findById(commentId);
+        if (!comment) {
+            throw new ApiError(404, "comment not found");
+        }
+        // video is published or not
+        const videoId = mongoose.Types.ObjectId(comment.video);
+        const video = await Video.findById(videoId);
+        if (!video) {
+            //if video doesn't exists then comment should be deleted
+            await Comment.deleteMany({ video: videoId }); //assume it is successfull
+            throw new ApiError(300, "Video doesn't exists");
+        }
+
+        if (comment.owner.toString() !== req.user?._id.toString()) {
+            throw new ApiError(300, "Unauthorized Access");
+        }
+
         const deletedComment = await Comment.findByIdAndDelete(commentId);
 
         if (!deletedComment) {
