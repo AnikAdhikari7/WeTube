@@ -91,10 +91,10 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     // upload images to cloudinary, avatar and coverImage
-    const avatar = await uploadOnCloudinary(avatarLocalPath, "avatar");
+    const avatar = await uploadOnCloudinary(avatarLocalPath, "users/avatar");
     const coverImage = await uploadOnCloudinary(
         coverImageLocalPath,
-        "coverImage"
+        "users/coverImage"
     );
 
     // thorow error if avatar upload fails on cloudinary
@@ -365,7 +365,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     }
 
     // upload avatar to cloudinary
-    const avatar = await uploadOnCloudinary(avatarLocalPath, "avatar");
+    const avatar = await uploadOnCloudinary(avatarLocalPath, "users/avatar");
 
     if (!avatar.url) {
         throw new ApiError(500, "Error while uploading the avatar");
@@ -418,7 +418,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     // upload cover image to cloudinary
     const coverImage = await uploadOnCloudinary(
         coverImageLocalPath,
-        "coverImage"
+        "users/coverImage"
     );
 
     if (!coverImage.url) {

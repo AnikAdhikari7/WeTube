@@ -15,11 +15,15 @@ const uploadOnCloudinary = async (localFilePath, type) => {
         // return null if there is no local file path
         if (!localFilePath) return null;
 
-        let folder = "wetube/users/";
-        if (type === "avatar") {
-            folder += "avatars/";
-        } else if (type === "coverImage") {
-            folder += "cover-images/";
+        let folder = "wetube/";
+        if (type === "users/avatar") {
+            folder += "users/avatars/";
+        } else if (type === "users/coverImage") {
+            folder += "users/cover-images/";
+        } else if (type === "videos/videoFile") {
+            folder += "videos/video-files/";
+        } else if (type === "videos/thumbnail") {
+            folder += "videos/thumbnails/";
         }
 
         // upload the file on cloudinary
@@ -49,13 +53,13 @@ const uploadOnCloudinary = async (localFilePath, type) => {
     }
 };
 
-const deleteFromCloudinary = async (folderPath, avatarUrl) => {
+const deleteFromCloudinary = async (folderPath, fileUrl) => {
     try {
         // return null if there is no public id
-        if (!avatarUrl) return null;
+        if (!fileUrl) return null;
 
         // extract the public id of the file to be deleted
-        const publicId = avatarUrl.split("/").pop().split(".")[0];
+        const publicId = fileUrl.split("/").pop().split(".")[0];
 
         // delete the file from cloudinary
         const response = await cloudinary.uploader.destroy(
