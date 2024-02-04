@@ -163,7 +163,30 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 const getVideoById = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
-    //TODO: get video by id
+
+    if (!videoId) {
+        throw new ApiError(400, "Please provide videoId");
+    } else if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid videoId");
+    }
+
+    try {
+        const video = await Video.findById(videoId).exec();
+
+        if (
+            !video ||
+            (!video?.isPublished &&
+                video?.owner.toString() !== req.user?._id.toString())
+        ) {
+            throw new ApiError(404, "Video not found");
+        }
+
+        res.status(200).json(
+            new ApiResponse(200, video, "Video fetched successfully")
+        );
+    } catch (error) {
+        throw new ApiError(500, error?.message || "Error in fetching video");
+    }
 });
 
 const updateVideo = asyncHandler(async (req, res) => {
