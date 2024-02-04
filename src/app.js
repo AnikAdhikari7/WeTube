@@ -20,12 +20,22 @@ app.use(express.urlencoded({ extended: true, limit: MAX_LIMIT }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
+// welcome route
+app.get(API_V, (req, res) => {
+    if (req.accepts("html")) {
+        res.send("<p>Welcome to WeTube!!</p>");
+    } else if (req.accepts("json")) {
+        res.json({ message: "Welcome to WeTube!!" });
+    } else {
+        res.type("txt").send("Welcome to WeTube!!");
+    }
+});
+
 // routes import
 import commentRouter from "./routes/comment.routes.js";
 import tweetRouter from "./routes/tweet.routes.js";
 import userRouter from "./routes/user.routes.js";
 import videoRouter from "./routes/video.routes.js";
-
 
 // routes declaration
 app.use(API_V + "/users", userRouter);
