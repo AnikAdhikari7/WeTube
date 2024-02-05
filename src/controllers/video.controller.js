@@ -9,17 +9,6 @@ import {
     uploadOnCloudinary,
 } from "../utils/cloudinary.js";
 
-// Check if the user is the owner of the video
-const isUserOwner = async (userId, videoId) => {
-    if (!(isValidObjectId(userId) || isValidObjectId(videoId))) {
-        return false;
-    }
-
-    const video = await Video.findById(videoId).exec();
-
-    return video?.owner?.toString() === userId;
-};
-
 const getAllVideos = asyncHandler(async (req, res) => {
     let { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
 
@@ -208,7 +197,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     }
 
     // check if the user is the owner of the video
-    if (await isUserOwner(req.user?._id, videoId)) {
+    if (video?.owner.toString() !== req.user?._id.toString()) {
         throw new ApiError(403, "You are not authorized to update this video");
     }
 
@@ -270,7 +259,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
     }
 
     // check if the user is the owner of the video
-    if (await isUserOwner(req.user?._id, videoId)) {
+    if (video?.owner.toString() !== req.user?._id.toString()) {
         throw new ApiError(403, "You are not authorized to update this video");
     }
 
@@ -302,6 +291,57 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
+
+    if (!videoId) {
+        throw new ApiError(400, "Please provide videoId");
+    } else if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid videoId");
+    }
+
+    try {
+        const video = await Video.findById(videoId)
+            .select("owner isPublished")
+            .exec();
+
+        if (!video) {
+            throw new ApiError(404, "Video not found");
+        }
+
+        // check if the user is the owner of the video
+        if (video?.owner.toString() !== req.user?._id.toString()) {
+            throw new ApiError(
+                403,
+                "You are not authorized to update this video"
+            );
+        }
+
+        video.isPublished = !video.isPublished;
+
+        await video.save();
+
+        // const updatedVideo = await Video.findByIdAndUpdate(
+        //     videoId,
+        //     {
+        //         $set: {
+        //             isPublished: !video.isPublished,
+        //         },
+        //     },
+        //     { new: true }
+        // ).exec();
+
+        // if (!updatedVideo) {
+        //     throw new ApiError(500, "Error in toggling publish status");
+        // }
+
+        res.status(200).json(
+            new ApiResponse(200, video, "Publish status updated successfully")
+        );
+    } catch (error) {
+        throw new ApiError(
+            500,
+            error?.message || "Error in toggling publish status"
+        );
+    }
 });
 
 export {
