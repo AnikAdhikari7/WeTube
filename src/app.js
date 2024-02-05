@@ -22,12 +22,21 @@ app.use(cookieParser());
 
 // welcome route
 app.get(API_V, (req, res) => {
+    const repoLink = "https://github.com/AnikAdhikari7/WeTube";
     if (req.accepts("html")) {
-        res.send("<p>Welcome to WeTube!!</p>");
+        res.send(
+            `<p>Welcome to WeTube!! Code and "How to use?" available at <a href="${repoLink}">[GitHub Repo]</a></p>`
+        );
     } else if (req.accepts("json")) {
-        res.json({ message: "Welcome to WeTube!!" });
+        res.json({
+            message: "Welcome to WeTube!!",
+            code: repoLink,
+            "howToUse?": repoLink + "/blob/main/README.md",
+        });
     } else {
-        res.type("txt").send("Welcome to WeTube!!");
+        res.type("txt").send(
+            `Welcome to WeTube!! Code and "How to use?" available at [GitHub Repo]: ${repoLink}`
+        );
     }
 });
 
