@@ -84,32 +84,26 @@ const getVideoComments = asyncHandler(async (req, res) => {
                 },
             },
             {
-                $addFields: {
+                $unwind: "$owner",
+            },
+            {
+                $project: {
+                    _id: 1,
+                    content: 1,
+                    createdAt: 1,
+                    owner: {
+                        _id: 1,
+                        username: 1,
+                        avatar: 1,
+                    },
                     likesCount: {
                         $size: "$likes",
-                    },
-                    owner: {
-                        $first: "$owner",
-                    },
-                    isLiked: {
-                        if: { $in: [req.user?._id, "$likes.likedBy"] },
-                        then: true,
-                        else: false,
                     },
                 },
             },
             {
-                $addFields: {
-                    content: 1,
-                    createdAt: 1,
-                    likesCount: 1,
-                    owner: {
-                        _id: 1,
-                        fullName: 1,
-                        username: 1,
-                        "avatar.url": 1,
-                    },
-                    isLiked: 1,
+                $sort: {
+                    createdAt: -1,
                 },
             },
         ]);
