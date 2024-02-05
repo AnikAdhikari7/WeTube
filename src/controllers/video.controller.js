@@ -4,7 +4,10 @@ import Video from "../models/video.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import {
+    deleteFromCloudinary,
+    uploadOnCloudinary,
+} from "../utils/cloudinary.js";
 
 // Check if the user is the owner of the video
 const isUserOwner = async (userId, videoId) => {
@@ -191,12 +194,110 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 const updateVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
-    //TODO: update video details like title, description, thumbnail
+
+    if (!videoId) {
+        throw new ApiError(400, "Please provide videoId");
+    } else if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid videoId");
+    }
+
+    const video = await Video.findById(videoId).exec();
+
+    if (!video) {
+        throw new ApiError(404, "Video not found");
+    }
+
+    // check if the user is the owner of the video
+    if (await isUserOwner(req.user?._id, videoId)) {
+        throw new ApiError(403, "You are not authorized to update this video");
+    }
+
+    try {
+        const { title, description } = req.body;
+        const thumbnailLocalPath = req.file?.path;
+
+        if (title || description || thumbnailLocalPath) {
+            if (title) {
+                video.title = title;
+            }
+            if (description) {
+                video.description = description;
+            }
+
+            const oldThumbnail = video.thumbnail;
+            const folderPath = "wetube/videos/thumbnails/";
+
+            if (thumbnailLocalPath) {
+                const thumbnail = await uploadOnCloudinary(
+                    thumbnailLocalPath,
+                    "videos/thumbnail"
+                );
+
+                if (!thumbnail?.url) {
+                    throw new ApiError(500, "Error in uploading thumbnail");
+                }
+
+                video.thumbnail = thumbnail.url;
+            }
+
+            await video.save({ validateBeforeSave: false }, { new: true });
+
+            // delete the old thumbnail from cloudinary
+            await deleteFromCloudinary(folderPath, oldThumbnail);
+
+            res.status(200).json(
+                new ApiResponse(200, video, "Video updated successfully")
+            );
+        }
+    } catch (error) {
+        throw new ApiError(500, error?.message || "Error in updating video");
+    }
 });
 
 const deleteVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
-    //TODO: delete video
+
+    if (!videoId) {
+        throw new ApiError(400, "Please provide videoId");
+    } else if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid videoId");
+    }
+
+    const video = await Video.findById(videoId).exec();
+
+    if (!video) {
+        throw new ApiError(404, "Video not found");
+    }
+
+    // check if the user is the owner of the video
+    if (await isUserOwner(req.user?._id, videoId)) {
+        throw new ApiError(403, "You are not authorized to update this video");
+    }
+
+    const oldVideo = video.videoFile;
+    const oldThumbnail = video.thumbnail;
+    const vidoeFolderPath = "wetube/videos/video-files/";
+    const thumbnailFolderPath = "wetube/videos/thumbnails/";
+
+    try {
+        const deletedVideo = await video.deleteOne().exec();
+
+        if (!deletedVideo) {
+            throw new ApiError(500, "Error in deleting video");
+        }
+
+        // delete the old video from cloudinary
+        await deleteFromCloudinary(vidoeFolderPath, oldVideo);
+
+        // delete the old thumbnail from cloudinary
+        await deleteFromCloudinary(thumbnailFolderPath, oldThumbnail);
+
+        res.status(200).json(
+            new ApiResponse(200, deletedVideo, "Video deleted successfully")
+        );
+    } catch (error) {
+        throw new ApiError(500, error?.message || "Error in deleting video");
+    }
 });
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
