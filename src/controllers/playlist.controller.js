@@ -1,4 +1,4 @@
-// import mongoose, { isValidObjectId } from "mongoose";
+import { isValidObjectId } from "mongoose";
 import Playlist from "../models/playlist.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
@@ -36,7 +36,33 @@ const createPlaylist = asyncHandler(async (req, res) => {
 
 const getUserPlaylists = asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    //TODO: get user playlists
+
+    if (!(userId || isValidObjectId(userId))) {
+        throw new ApiError(400, "Invalid user id");
+    }
+
+    try {
+        const playlists = await Playlist.find({ owner: userId })
+            .populate({
+                path: "videos",
+                select: "thumbnail",
+                options: { sort: { _id: -1 }, limit: 1 },
+            })
+            .exec();
+
+        if (!playlists) {
+            throw new ApiError(404, "No playlists found");
+        }
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200, playlists, "User playlists"));
+    } catch (error) {
+        throw new ApiError(
+            500,
+            error?.message || "Failed to get user playlists"
+        );
+    }
 });
 
 const getPlaylistById = asyncHandler(async (req, res) => {
