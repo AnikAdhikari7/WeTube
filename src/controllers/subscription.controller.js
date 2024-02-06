@@ -121,6 +121,65 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 // controller to return channel list to which user has subscribed
 const getSubscribedChannels = asyncHandler(async (req, res) => {
     const { subscriberId } = req.params;
+
+    if (!subscriberId) {
+        throw new ApiError(400, "Subscriber ID is required");
+    } else if (!isValidObjectId(subscriberId)) {
+        throw new ApiError(400, "Invalid Subscriber ID");
+    }
+
+    try {
+        const channels = await Subscription.aggregate([
+            {
+                $match: {
+                    subscriber: new mongoose.Types.ObjectId(subscriberId),
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "channel",
+                    foreignField: "_id",
+                    as: "channel",
+                },
+            },
+            {
+                $unwind: "$channel",
+            },
+            {
+                $project: {
+                    _id: 0,
+                    channel: {
+                        _id: 1,
+                        username: 1,
+                        fullName: 1,
+                        avatar: 1,
+                    },
+                },
+            },
+        ]);
+
+        if (!channels || channels.length === 0) {
+            throw new ApiError(404, "No subscribed channels found");
+        }
+
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                {
+                    subscriberId,
+                    subscribedChannelsCount: channels.length,
+                    channels,
+                },
+                "Subscribed channels found"
+            )
+        );
+    } catch (error) {
+        throw new ApiError(
+            500,
+            error?.message || "Failed to get subscribed channels"
+        );
+    }
 });
 
 export { getSubscribedChannels, getUserChannelSubscribers, toggleSubscription };
