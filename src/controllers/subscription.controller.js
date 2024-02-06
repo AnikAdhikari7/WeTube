@@ -26,9 +26,11 @@ const toggleSubscription = asyncHandler(async (req, res) => {
                 throw new ApiError(500, "Failed to unsubscribe");
             }
 
-            res.status(200).json(
-                new ApiResponse(200, deleted, "Unsubscribed successfully")
-            );
+            return res
+                .status(200)
+                .json(
+                    new ApiResponse(200, deleted, "Unsubscribed successfully")
+                );
         } else {
             // if not subscribed, then subscribe
             const newSubscription = await Subscription.create(credentials);
@@ -41,9 +43,15 @@ const toggleSubscription = asyncHandler(async (req, res) => {
                 throw new ApiError(500, "Failed to subscribe");
             }
 
-            res.status(201).json(
-                new ApiResponse(201, newSubscription, "Subscribed successfully")
-            );
+            return res
+                .status(201)
+                .json(
+                    new ApiResponse(
+                        201,
+                        newSubscription,
+                        "Subscribed successfully"
+                    )
+                );
         }
     } catch (error) {
         throw new ApiError(

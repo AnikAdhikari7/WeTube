@@ -26,9 +26,9 @@ const addComment = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Unable to add comment");
         }
 
-        res.status(201).json(
-            new ApiResponse(201, comment, "Comment added successfully")
-        );
+        return res
+            .status(201)
+            .json(new ApiResponse(201, comment, "Comment added successfully"));
     } catch (error) {
         throw new ApiError(
             500,
@@ -122,9 +122,11 @@ const getVideoComments = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Unable to get comments");
         }
 
-        res.status(200).json(
-            new ApiResponse(200, comments, "Comments fetched successfully")
-        );
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, comments, "Comments fetched successfully")
+            );
     } catch (error) {
         throw new ApiError(
             500,
@@ -175,9 +177,11 @@ const updateComment = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Unable to update comment");
         }
 
-        res.status(201).json(
-            new ApiResponse(201, newComment, "Comment updated successfully")
-        );
+        return res
+            .status(201)
+            .json(
+                new ApiResponse(201, newComment, "Comment updated successfully")
+            );
     } catch (error) {
         throw new ApiError(
             500,
@@ -217,9 +221,15 @@ const deleteComment = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Unable to delte comment");
         }
 
-        res.status(201).json(
-            new ApiResponse(201, deletedComment, "Comment deleted successfully")
-        );
+        return res
+            .status(201)
+            .json(
+                new ApiResponse(
+                    201,
+                    deletedComment,
+                    "Comment deleted successfully"
+                )
+            );
     } catch (error) {
         throw new ApiError(
             500,

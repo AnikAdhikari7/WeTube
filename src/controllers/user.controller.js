@@ -523,9 +523,15 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Channel does not exists");
     }
 
-    res.status(200).json(
-        new ApiResponse(200, channel[0], "User channel fetched successfully")
-    );
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                channel[0],
+                "User channel fetched successfully"
+            )
+        );
 });
 
 const getWatchHistory = asyncHandler(async (req, res) => {
@@ -571,13 +577,15 @@ const getWatchHistory = asyncHandler(async (req, res) => {
 
         // console.log("user: ", user);
         // console.log("user: ", user[0]);
-        res.status(200).json(
-            new ApiResponse(
-                200,
-                user[0].watchHistory,
-                "Watch history fetched successfully"
-            )
-        );
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    user[0].watchHistory,
+                    "Watch history fetched successfully"
+                )
+            );
     } catch (error) {
         throw new ApiError(400, "User not found");
     }

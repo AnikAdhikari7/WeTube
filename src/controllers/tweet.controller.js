@@ -21,9 +21,9 @@ const createTweet = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Tweet not created");
         }
 
-        res.status(201).json(
-            new ApiResponse(201, tweet, "Tweet created successfully")
-        );
+        return res
+            .status(201)
+            .json(new ApiResponse(201, tweet, "Tweet created successfully"));
     } catch (error) {
         throw new ApiError(500, error?.message || "Unable to create tweet");
     }
@@ -56,13 +56,15 @@ const getUserTweets = asyncHandler(async (req, res) => {
             _id: req.user?._id,
         };
 
-        res.status(200).json(
-            new ApiResponse(
-                200,
-                { tweetsOwner, tweets },
-                "Tweets retrieved successfully"
-            )
-        );
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    { tweetsOwner, tweets },
+                    "Tweets retrieved successfully"
+                )
+            );
     } catch (error) {
         throw new ApiError(500, error?.message || "Unable to get tweets");
     }
@@ -108,9 +110,11 @@ const updateTweet = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Unable to update tweet");
         }
 
-        res.status(200).json(
-            new ApiResponse(200, updatedTweet, "Tweet updated successfully")
-        );
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, updatedTweet, "Tweet updated successfully")
+            );
     } catch (error) {
         throw new ApiError(500, error?.message || "Unable to update tweet");
     }
@@ -143,9 +147,11 @@ const deleteTweet = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Unable to delete tweet");
         }
 
-        res.status(200).json(
-            new ApiResponse(200, deleteTweet, "Tweet deleted successfully")
-        );
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, deleteTweet, "Tweet deleted successfully")
+            );
     } catch (error) {
         throw new ApiError(500, error?.message || "Unable to delete tweet");
     }

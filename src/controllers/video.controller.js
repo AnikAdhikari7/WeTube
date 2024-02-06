@@ -22,7 +22,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
     
     const count = await Video.countDocuments({ isPublished: true });
 
-    res.status(200).json(
+    return res.status(200).json(
         new ApiResponse(200, { videos, count }, "Videos fetched successfully")
     );
     */
@@ -93,9 +93,9 @@ const getAllVideos = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Error in fetching videos");
         }
 
-        res.status(200).json(
-            new ApiResponse(200, videos, "Videos fetched successfully")
-        );
+        return res
+            .status(200)
+            .json(new ApiResponse(200, videos, "Videos fetched successfully"));
     } catch (error) {
         throw new ApiError(500, error?.message || "Error in fetching videos");
     }
@@ -145,9 +145,11 @@ const publishAVideo = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Error in publishing video");
         }
 
-        res.status(201).json(
-            new ApiResponse(201, newVideo, "Video published successfully")
-        );
+        return res
+            .status(201)
+            .json(
+                new ApiResponse(201, newVideo, "Video published successfully")
+            );
     } catch (error) {
         throw new ApiError(500, error?.message || "Error in publishing video");
     }
@@ -173,9 +175,9 @@ const getVideoById = asyncHandler(async (req, res) => {
             throw new ApiError(404, "Video not found");
         }
 
-        res.status(200).json(
-            new ApiResponse(200, video, "Video fetched successfully")
-        );
+        return res
+            .status(200)
+            .json(new ApiResponse(200, video, "Video fetched successfully"));
     } catch (error) {
         throw new ApiError(500, error?.message || "Error in fetching video");
     }
@@ -234,9 +236,11 @@ const updateVideo = asyncHandler(async (req, res) => {
             // delete the old thumbnail from cloudinary
             await deleteFromCloudinary(folderPath, oldThumbnail);
 
-            res.status(200).json(
-                new ApiResponse(200, video, "Video updated successfully")
-            );
+            return res
+                .status(200)
+                .json(
+                    new ApiResponse(200, video, "Video updated successfully")
+                );
         }
     } catch (error) {
         throw new ApiError(500, error?.message || "Error in updating video");
@@ -281,9 +285,11 @@ const deleteVideo = asyncHandler(async (req, res) => {
         // delete the old thumbnail from cloudinary
         await deleteFromCloudinary(thumbnailFolderPath, oldThumbnail);
 
-        res.status(200).json(
-            new ApiResponse(200, deletedVideo, "Video deleted successfully")
-        );
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, deletedVideo, "Video deleted successfully")
+            );
     } catch (error) {
         throw new ApiError(500, error?.message || "Error in deleting video");
     }
@@ -333,9 +339,15 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
         //     throw new ApiError(500, "Error in toggling publish status");
         // }
 
-        res.status(200).json(
-            new ApiResponse(200, video, "Publish status updated successfully")
-        );
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    video,
+                    "Publish status updated successfully"
+                )
+            );
     } catch (error) {
         throw new ApiError(
             500,
