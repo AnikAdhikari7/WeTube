@@ -42,6 +42,7 @@ app.get(API_V, (req, res) => {
 
 // routes import
 import commentRouter from "./routes/comment.routes.js";
+import subscriptionRouter from "./routes/subscription.routes.js";
 import tweetRouter from "./routes/tweet.routes.js";
 import userRouter from "./routes/user.routes.js";
 import videoRouter from "./routes/video.routes.js";
@@ -51,5 +52,6 @@ app.use(API_V + "/users", userRouter);
 app.use(API_V + "/tweets", tweetRouter);
 app.use(API_V + "/comments", commentRouter);
 app.use(API_V + "/videos", videoRouter);
+app.use(API_V + "/subscriptions", subscriptionRouter);
 
 export default app;
