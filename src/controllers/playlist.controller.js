@@ -50,7 +50,7 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
             })
             .exec();
 
-        if (!playlists) {
+        if (!playlists || playlists.length === 0) {
             throw new ApiError(404, "No playlists found");
         }
 
