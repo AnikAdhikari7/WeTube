@@ -9,7 +9,7 @@ const addComment = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
     const { content } = req.body;
 
-    if (!(videoId || isValidObjectId(videoId))) {
+    if (!videoId || !isValidObjectId(videoId)) {
         throw new ApiError(400, "Invalid video id");
     } else if (!content) {
         throw new ApiError(400, "Comment content is required");
@@ -42,7 +42,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
     const { page = 1, limit = 10 } = req.query;
 
-    if (!(videoId || isValidObjectId(videoId))) {
+    if (!videoId || !isValidObjectId(videoId)) {
         throw new ApiError(400, "Invalid video id");
     }
 
@@ -139,7 +139,7 @@ const updateComment = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
     const { newContent } = req.body;
 
-    if (!(commentId || isValidObjectId(commentId))) {
+    if (!commentId || !isValidObjectId(commentId)) {
         throw new ApiError(400, "Invalid comment id");
     } else if (!newContent) {
         throw new ApiError(400, "New comment content is required");
@@ -193,7 +193,7 @@ const updateComment = asyncHandler(async (req, res) => {
 const deleteComment = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
 
-    if (!(commentId || isValidObjectId(commentId))) {
+    if (!commentId || !isValidObjectId(commentId)) {
         throw new ApiError(400, "Invalid comment id");
     }
 
