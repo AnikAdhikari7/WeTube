@@ -37,18 +37,16 @@ const createPlaylist = asyncHandler(async (req, res) => {
 const getUserPlaylists = asyncHandler(async (req, res) => {
     const { userId } = req.params;
 
-    if (!(userId || isValidObjectId(userId))) {
+    if (!userId || !isValidObjectId(userId)) {
         throw new ApiError(400, "Invalid user id");
     }
 
     try {
-        const playlists = await Playlist.find({ owner: userId })
-            .populate({
-                path: "videos",
-                select: "thumbnail",
-                options: { sort: { _id: -1 }, limit: 1 },
-            })
-            .exec();
+        const playlists = await Playlist.find({ owner: userId }).populate({
+            path: "videos",
+            select: "thumbnail",
+            options: { sort: { _id: -1 }, limit: 1 },
+        });
 
         if (!playlists || playlists.length === 0) {
             throw new ApiError(404, "No playlists found");
@@ -68,7 +66,7 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
 const getPlaylistById = asyncHandler(async (req, res) => {
     const { playlistId } = req.params;
 
-    if (!(playlistId || isValidObjectId(playlistId))) {
+    if (!playlistId || !isValidObjectId(playlistId)) {
         throw new ApiError(400, "Invalid playlist id");
     }
 
@@ -111,10 +109,8 @@ const getPlaylistById = asyncHandler(async (req, res) => {
         ]);
 
         if (
-            !(
-                playlist ||
-                playlist.owner.toString() === req.user?._id.toString()
-            )
+            !playlist ||
+            playlist.owner.toString() !== req.user?._id.toString()
         ) {
             throw new ApiError(404, "Playlist not found");
         }
@@ -130,9 +126,9 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
     const { playlistId, videoId } = req.params;
 
-    if (!(playlistId || isValidObjectId(playlistId))) {
+    if (!playlistId || !isValidObjectId(playlistId)) {
         throw new ApiError(400, "Invalid playlist id");
-    } else if (!(videoId || isValidObjectId(videoId))) {
+    } else if (!videoId || !isValidObjectId(videoId)) {
         throw new ApiError(400, "Invalid video id");
     }
 
