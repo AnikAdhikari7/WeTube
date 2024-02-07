@@ -1,4 +1,4 @@
-import { isValidObjectId } from "mongoose";
+import mongoose, { isValidObjectId } from "mongoose";
 import Playlist from "../models/playlist.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
@@ -67,7 +67,64 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
 
 const getPlaylistById = asyncHandler(async (req, res) => {
     const { playlistId } = req.params;
-    //TODO: get playlist by id
+
+    if (!(playlistId || isValidObjectId(playlistId))) {
+        throw new ApiError(400, "Invalid playlist id");
+    }
+
+    try {
+        const playlist = await Playlist.aggregate([
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(playlistId),
+                },
+            },
+            {
+                $lookup: {
+                    from: "videos",
+                    localField: "videos",
+                    foreignField: "_id",
+                    as: "videos",
+                },
+            },
+
+            {
+                $project: {
+                    name: 1,
+                    description: 1,
+                    videos: {
+                        $map: {
+                            input: "$videos",
+                            as: "video",
+                            in: {
+                                _id: "$$video._id",
+                                title: "$$video.title",
+                                thumbnail: "$$video.thumbnail",
+                                duration: "$$video.duration",
+                                views: "$$video.views",
+                                owner: "$$video.owner",
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+
+        if (
+            !(
+                playlist ||
+                playlist.owner.toString() === req.user?._id.toString()
+            )
+        ) {
+            throw new ApiError(404, "Playlist not found");
+        }
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200, playlist, "Playlist details"));
+    } catch (error) {
+        throw new ApiError(500, error?.message || "Failed to get playlist");
+    }
 });
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
