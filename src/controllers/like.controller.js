@@ -1,6 +1,7 @@
 import { isValidObjectId } from "mongoose";
 import Comment from "../models/comment.model.js";
 import Like from "../models/like.model.js";
+import Tweet from "../models/tweet.model.js";
 import Video from "../models/video.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
@@ -125,7 +126,57 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
 
 const toggleTweetLike = asyncHandler(async (req, res) => {
     const { tweetId } = req.params;
-    //TODO: toggle like on tweet
+
+    if (!tweetId || !isValidObjectId(tweetId)) {
+        throw new ApiError(400, "Invalid tweet id");
+    }
+
+    const userId = req.user?._id;
+
+    try {
+        const tweet = await Tweet.findById(tweetId);
+
+        if (!tweet) {
+            throw new ApiError(404, "Tweet not found");
+        }
+
+        const likeCriteria = { tweet: tweetId, likedBy: userId };
+
+        const alreadyLiked = await Like.findOne(likeCriteria);
+
+        if (alreadyLiked) {
+            // if already liked, then unlike
+            const deleted = await Like.findByIdAndDelete(alreadyLiked._id);
+
+            if (!deleted) {
+                throw new ApiError(500, "Failed to unlike tweet");
+            }
+
+            return res
+                .status(200)
+                .json(
+                    new ApiResponse(200, deleted, "Tweet unliked successfully")
+                );
+        } else {
+            // if not liked, then like
+            const newLike = await Like.create(likeCriteria);
+
+            if (!newLike) {
+                throw new ApiError(500, "Failed to like tweet");
+            }
+
+            return res
+                .status(201)
+                .json(
+                    new ApiResponse(201, newLike, "Tweet liked successfully")
+                );
+        }
+    } catch (error) {
+        throw new ApiError(
+            500,
+            error?.message || "Failed to toggle like on tweet"
+        );
+    }
 });
 
 const getLikedVideos = asyncHandler(async (req, res) => {
