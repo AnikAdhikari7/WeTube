@@ -1,4 +1,4 @@
-import { isValidObjectId } from "mongoose";
+import mongoose, { isValidObjectId } from "mongoose";
 import Comment from "../models/comment.model.js";
 import Like from "../models/like.model.js";
 import Tweet from "../models/tweet.model.js";
@@ -180,7 +180,109 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 });
 
 const getLikedVideos = asyncHandler(async (req, res) => {
-    //TODO: get all liked videos
+    const userId = req.user?._id;
+
+    try {
+        const likedVideos = await Like.aggregate([
+            {
+                // match the liked videos by the user
+                $match: {
+                    likedBy: new mongoose.Types.ObjectId(userId),
+                },
+            },
+            {
+                // lookup the video details
+                $lookup: {
+                    from: "videos",
+                    localField: "video",
+                    foreignField: "_id",
+                    as: "likedVideos",
+                },
+            },
+            {
+                $unwind: "$likedVideos",
+            },
+            {
+                // match the liked videos which are published
+                $match: {
+                    "likedVideos.isPublished": true,
+                },
+            },
+            {
+                // lookup the owner details
+                $lookup: {
+                    from: "users",
+                    let: { owner_id: "$likedVideos.owner" },
+                    pipeline: [
+                        // pipeline to match the owner details
+                        {
+                            $match: {
+                                $expr: { $eq: ["$_id", "$$owner_id"] },
+                            },
+                        },
+                        {
+                            // project the required fields
+                            $project: {
+                                _id: 0,
+                                username: 1,
+                                avatar: 1,
+                                fullName: 1,
+                            },
+                        },
+                    ],
+                    as: "owner",
+                },
+            },
+            {
+                // unwind the owner details
+                $unwind: { path: "$owner", preserveNullAndEmptyArrays: true },
+            },
+            {
+                // project the required fields
+                $project: {
+                    _id: "$likedVideos._id",
+                    title: "$likedVideos.title",
+                    thumbnail: "$likedVideos.thumbnail",
+                    duration: "$likedVideos.duration",
+                    views: "$likedVideos.views",
+                    owner: {
+                        username: "$owner.username",
+                        avatar: "$owner.avatar",
+                        fullName: "$owner.fullName",
+                    },
+                },
+            },
+            {
+                // group the liked videos
+                $group: {
+                    _id: null,
+                    likedVideos: { $push: "$$ROOT" },
+                },
+            },
+            {
+                // project the required fields
+                $project: {
+                    _id: 0,
+                    likedVideos: 1,
+                },
+            },
+        ]);
+
+        if (likedVideos.length === 0) {
+            return res
+                .status(404)
+                .json(new ApiResponse(404, [], "No liked videos found"));
+        }
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200, likedVideos, "Liked videos fetched"));
+    } catch (error) {
+        throw new ApiError(
+            500,
+            error?.message || "Failed to fetch liked videos"
+        );
+    }
 });
 
 export { getLikedVideos, toggleCommentLike, toggleTweetLike, toggleVideoLike };
