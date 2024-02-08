@@ -42,6 +42,7 @@ app.get(API_V, (req, res) => {
 
 // routes import
 import commentRouter from "./routes/comment.routes.js";
+import healthcheckRouter from "./routes/healthcheck.routes.js";
 import likeRouter from "./routes/like.routes.js";
 import playlistRouter from "./routes/playlist.routes.js";
 import subscriptionRouter from "./routes/subscription.routes.js";
@@ -57,5 +58,6 @@ app.use(API_V + "/videos", videoRouter);
 app.use(API_V + "/subscriptions", subscriptionRouter);
 app.use(API_V + "/playlist", playlistRouter);
 app.use(API_V + "/likes", likeRouter);
+app.use(API_V + "/healthcheck", healthcheckRouter);
 
 export default app;
