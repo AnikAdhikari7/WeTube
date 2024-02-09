@@ -90,6 +90,7 @@ const getPlaylistById = asyncHandler(async (req, res) => {
                 $project: {
                     name: 1,
                     description: 1,
+                    owner: 1,
                     videos: {
                         $map: {
                             input: "$videos",
@@ -110,7 +111,8 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 
         if (
             !playlist ||
-            playlist.owner.toString() !== req.user?._id.toString()
+            !playlist.length ||
+            playlist[0].owner.toString() !== req.user?._id.toString()
         ) {
             throw new ApiError(404, "Playlist not found");
         }
