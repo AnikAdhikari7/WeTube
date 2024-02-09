@@ -85,6 +85,18 @@ After installing the dependencies, you can run the application using the followi
     npm start
     ```
 
+## 📚 API Documentation
+
+We have a Postman collection that you can use to explore the API. Follow these steps to import it into Postman:
+
+1. Download the `WeTube.postman_collection.json` file from the repository.
+2. Open Postman.
+3. Click on the "Import" button.
+4. Select the `WeTube.postman_collection.json` file.
+5. After importing, you will see a "WeTube" collection in your Postman sidebar. Click on it to see the available requests.
+
+You can also view the API documentation online. Here's the link to the [WeTube Postman Documentation](https://github.com/AnikAdhikari7/WeTube/blob/main/WeTube.postman_collection.json).
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
