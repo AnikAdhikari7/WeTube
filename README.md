@@ -85,6 +85,26 @@ After installing the dependencies, you can run the application using the followi
     npm start
     ```
 
+## 🐳 Docker Usage
+
+You can also run this application as a Docker container:
+
+1. Pull the Docker image from Docker Hub:
+
+    ```bash
+    docker pull anikadhikari/wetube:latest
+
+    ```
+
+2. Run the Docker container:
+    ```bash
+    docker run --rm -d -p 8080:8080 --env-file ./.env --name <wetube-docker-container> anikadhikari/wetube:latest
+    ```
+    Replace `<wetube-docker-container>` with your desired container name. <br/>
+    Replace `8080` with your desired port number.
+
+-   To to know more about the docker image, visit the [Docker Hub](https://hub.docker.com/r/anikadhikari/wetube).
+
 ## 📚 API Documentation
 
 We have a Postman collection that you can use to explore the API. Follow these steps to import it into Postman:
