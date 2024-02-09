@@ -10,6 +10,8 @@ WeTube is a robust backend server for video and post sharing. It utilizes MongoD
 -   👍 Likes and Comments
 -   🎵 Playlists
 -   📬 Subscriptions
+-   📊 Dashboard
+-   🏥 Health Check
 
 ## 🛠️ Technologies Used
 
