@@ -115,6 +115,12 @@ We have a Postman collection that you can use to explore the API. Follow these s
 4. Select the `WeTube.postman_collection.json` file.
 5. After importing, you will see a "WeTube" collection in your Postman sidebar. Click on it to see the available requests.
 
+**Note:**
+In this document, `{{server}}` is used as a placeholder for the server URL.
+You should replace it with your actual server URL. <br/>
+`{{server}}` is defined as a global variable in the collection. <br/>
+By default, `{{server}}` is set to `http://localhost:8080/api/v1`.
+
 You can also view the API documentation online. Here's the link to the [WeTube Postman Documentation](https://github.com/AnikAdhikari7/WeTube/blob/main/WeTube.postman_collection.json).
 
 ## 📄 License
