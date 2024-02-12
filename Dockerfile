@@ -1,5 +1,5 @@
 # Use the official latest Node.js runtime as the base image
-FROM node:latest
+FROM node:19-bullseye
 
 # Set the working directory in the container to /app
 WORKDIR /app
