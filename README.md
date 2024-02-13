@@ -2,7 +2,7 @@
 
 WeTube is a robust backend server for video and post sharing. It utilizes MongoDB for data management, Cloudinary for media management, and Express.js for handling HTTP requests. It offers a wide range of features including authentication, video uploading, tweeting, likes, comments, playlists, subscriptions, and more.
 
-### The server is currently running at [http://wetube.ap-south-1.elasticbeanstalk.com/api/v1](http://wetube.ap-south-1.elasticbeanstalk.com/api/v1).
+### The server is currently running at [http://wetube.ap-south-1.elasticbeanstalk.com/api/v1](http://wetube.ap-south-1.elasticbeanstalk.com/api/v1)
 
 ## 🚀 How to Use the Deployed Server
 
@@ -12,9 +12,9 @@ WeTube is a robust backend server for video and post sharing. It utilizes MongoD
 
 #### Once you are authenticated, you can send HTTP requests to the server URL. <br/>
 
-The base URL for all requests is `http://wetube.ap-south-1.elasticbeanstalk.com/api/v1`.
+The base URL for all requests is `http://wetube.ap-south-1.elasticbeanstalk.com/api/v1`
 
-For example, if you want to get a list of all videos, you might send a GET request to `http://wetube.ap-south-1.elasticbeanstalk.com/api/v1/videos`.
+For example, if you want to get a list of all videos, you might send a GET request to `http://wetube.ap-south-1.elasticbeanstalk.com/api/v1/videos`
 
 Please refer to the API documentation for more details on the available endpoints and how to use them.
 
@@ -29,11 +29,11 @@ We have a Postman collection that you can use to explore the API. Follow these s
 5. After importing, you will see a "WeTube" collection in your Postman sidebar. Click on it to see the available requests.
 
 **Note:**
-In this document, `{{server}}` is used as a placeholder for the server URL.
-You should replace it with your actual server URL, which is `http://wetube.ap-south-1.elasticbeanstalk.com/api/v1`.
+In this document, `{{server}}` is used as a placeholder for the server URL. <br/>
+You should replace it with your actual server URL, which is `http://wetube.ap-south-1.elasticbeanstalk.com/api/v1` <br/>
 `{{server}}` is defined as a global variable in the collection.
 
-You can also view the API documentation online. Here's the link to the [WeTube Postman Documentation](https://github.com/AnikAdhikari7/WeTube/blob/main/WeTube.postman_collection.json).
+You can also view the API documentation online. Here's the link to the [WeTube Postman Documentation](https://github.com/AnikAdhikari7/WeTube/blob/main/WeTube.postman_collection.json)
 
 ## 🚀 Features
 
@@ -54,7 +54,7 @@ You can also view the API documentation online. Here's the link to the [WeTube P
 -   **Bcrypt**: A library to help you hash passwords.
 -   **Cookie-parser**: Parse Cookie header and populate `req.cookies` with an object keyed by the cookie names.
 -   **Cors**: A node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
--   **Dotenv**: A zero-dependency module that loads environment variables from a `.env` file into `process.env`.
+-   **Dotenv**: A zero-dependency module that loads environment variables from a `.env` file into `process.env`
 -   **Jsonwebtoken**: An implementation of JSON Web Tokens.
 -   **Mongoose**: An Object Data Modeling (ODM) library for MongoDB and Node.js.
 -   **Mongoose-aggregate-paginate-v2**: A mongoose plugin to paginate aggregation results.
@@ -68,9 +68,9 @@ These instructions will get you a copy of the project up and running on your loc
 
 Before you begin, ensure you have met the following requirements:
 
--   🖥️ You have a recent version of **Node.js** installed. If not, you can download it from [here](https://nodejs.org/).
+-   🖥️ You have a recent version of **Node.js** installed. If not, you can download it from [here](https://nodejs.org/)
 -   🧰 You have a package manager like **npm** (comes with Node.js) or **yarn** installed.
--   🛠️ You have **Git** installed. If not, you can download it from [here](https://git-scm.com/downloads).
+-   🛠️ You have **Git** installed. If not, you can download it from [here](https://git-scm.com/downloads)
 
 ## 🛠️ Installation & Set Up
 
@@ -136,7 +136,7 @@ You can also run this application as a Docker container:
     Replace `<wetube-docker-container>` with your desired container name. <br/>
     Replace `8080` with your desired port number.
 
--   To to know more about the docker image, visit the [Docker Hub](https://hub.docker.com/r/anikadhikari/wetube).
+-   To to know more about the docker image, visit the [Docker Hub](https://hub.docker.com/r/anikadhikari/wetube)
 
 ## 📄 License
 
