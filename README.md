@@ -2,6 +2,40 @@
 
 WeTube is a robust backend server for video and post sharing. It utilizes MongoDB for data management, Cloudinary for media management, and Express.js for handling HTTP requests. It offers a wide range of features including authentication, video uploading, tweeting, likes, comments, playlists, subscriptions, and more.
 
+### The server is currently running at [http://wetube.ap-south-1.elasticbeanstalk.com/api/v1](http://wetube.ap-south-1.elasticbeanstalk.com/api/v1).
+
+## 🚀 How to Use the Deployed Server
+
+#### To use the deployed server, you need to register or login first. <br/>
+
+<img src="./public/assets/register-demo.png" alt="Register-Demo" width="300"/>
+<img src="./public/assets/login-demo.png" alt="Login-Demo" width="300"/> <br/>
+
+#### Once you are authenticated, you can send HTTP requests to the server URL. <br/>
+
+The base URL for all requests is `http://wetube.ap-south-1.elasticbeanstalk.com/api/v1`.
+
+For example, if you want to get a list of all videos, you might send a GET request to `http://wetube.ap-south-1.elasticbeanstalk.com/api/v1/videos`.
+
+Please refer to the API documentation for more details on the available endpoints and how to use them.
+
+## 📚 API Documentation
+
+We have a Postman collection that you can use to explore the API. Follow these steps to import it into Postman:
+
+1. Download the `WeTube.postman_collection.json` file from the repository.
+2. Open Postman.
+3. Click on the "Import" button.
+4. Select the `WeTube.postman_collection.json` file.
+5. After importing, you will see a "WeTube" collection in your Postman sidebar. Click on it to see the available requests.
+
+**Note:**
+In this document, `{{server}}` is used as a placeholder for the server URL.
+You should replace it with your actual server URL, which is `http://wetube.ap-south-1.elasticbeanstalk.com/api/v1`.
+`{{server}}` is defined as a global variable in the collection.
+
+You can also view the API documentation online. Here's the link to the [WeTube Postman Documentation](https://github.com/AnikAdhikari7/WeTube/blob/main/WeTube.postman_collection.json).
+
 ## 🚀 Features
 
 -   🔐 User Authentication
@@ -104,24 +138,6 @@ You can also run this application as a Docker container:
     Replace `8080` with your desired port number.
 
 -   To to know more about the docker image, visit the [Docker Hub](https://hub.docker.com/r/anikadhikari/wetube).
-
-## 📚 API Documentation
-
-We have a Postman collection that you can use to explore the API. Follow these steps to import it into Postman:
-
-1. Download the `WeTube.postman_collection.json` file from the repository.
-2. Open Postman.
-3. Click on the "Import" button.
-4. Select the `WeTube.postman_collection.json` file.
-5. After importing, you will see a "WeTube" collection in your Postman sidebar. Click on it to see the available requests.
-
-**Note:**
-In this document, `{{server}}` is used as a placeholder for the server URL.
-You should replace it with your actual server URL. <br/>
-`{{server}}` is defined as a global variable in the collection. <br/>
-By default, `{{server}}` is set to `http://localhost:8080/api/v1`.
-
-You can also view the API documentation online. Here's the link to the [WeTube Postman Documentation](https://github.com/AnikAdhikari7/WeTube/blob/main/WeTube.postman_collection.json).
 
 ## 📄 License
 
