@@ -8,8 +8,7 @@ WeTube is a robust backend server for video and post sharing. It utilizes MongoD
 
 #### To use the deployed server, you need to register or login first. <br/>
 
-<img src="./public/assets/register-demo.png" alt="Register-Demo" width="300"/>
-<img src="./public/assets/login-demo.png" alt="Login-Demo" width="300"/> <br/>
+<img src="./public/assets/register-demo.png" alt="Register-Demo" width="300"/> <img src="./public/assets/login-demo.png" alt="Login-Demo" width="300"/> <br/>
 
 #### Once you are authenticated, you can send HTTP requests to the server URL. <br/>
 
